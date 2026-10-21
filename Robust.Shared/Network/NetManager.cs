@@ -1145,6 +1145,14 @@ namespace Robust.Shared.Network
                 channel.Disconnect("Failed to deserialize packet.", false);
                 return true;
             }
+            // Dumont changes start
+            catch (global::NetSerializer.DeserializationDepthException)
+            {
+                _logger.Warning($"{channel.UserName} ({channel.UserId}) {msg.SenderConnection.RemoteEndPoint}: sent {type.Name} past max deserialization depth, probably a crash attempt");
+                channel.Disconnect("Failed to deserialize packet.", false);
+                return true;
+            }
+            // Dumont end
             catch (Exception e) // yes, we want to catch ALL exeptions for security
             {
                 if (_logPacketIssues)
